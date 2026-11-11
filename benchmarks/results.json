@@ -1,0 +1,37 @@
+{
+  "mode": "mock",
+  "policy": "cost",
+  "prompts": 36,
+  "routing_accuracy": 1.0,
+  "sufficient_model_rate": 1.0,
+  "escalation_rate": 0.0,
+  "escalations": 0,
+  "exact_cache_hit_rate": 1.0,
+  "semantic_prompts": 5,
+  "semantic_cache_hit_rate": 1.0,
+  "latency_ms": {
+    "p50": 19.084,
+    "p95": 27.248
+  },
+  "cost_usd": 0.0033902000000000003,
+  "cost_saved_usd": 0.0013017999999999999,
+  "cost_if_always_largest_usd": 0.004692,
+  "savings_pct": 27.745098039215684,
+  "by_label": {
+    "easy": {
+      "n": 12,
+      "accuracy": 1.0,
+      "savings_pct": 87.60797342192691
+    },
+    "medium": {
+      "n": 12,
+      "accuracy": 1.0,
+      "savings_pct": 72.95151089248067
+    },
+    "hard": {
+      "n": 12,
+      "accuracy": 1.0,
+      "savings_pct": 0.0
+    }
+  }
+}

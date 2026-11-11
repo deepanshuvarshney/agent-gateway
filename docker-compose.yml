@@ -1,0 +1,56 @@
+# Default stack: gateway + Redis. Jaeger is optional:
+#   GATEWAY_OTEL_EXPORTER=otlp GATEWAY_OTEL_ENDPOINT=http://jaeger:4318/v1/traces \
+#     docker compose --profile observability up
+services:
+  gateway:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      PORT: "8000"
+      GATEWAY_REDIS_URL: redis://redis:6379/0
+      GATEWAY_OTEL_EXPORTER: none
+      GATEWAY_DATABASE_URL: sqlite:////data/gateway.db
+      GATEWAY_BOOTSTRAP_API_KEY: gw_demo_public
+      GATEWAY_ADMIN_API_KEY: gw_admin_dev
+      GATEWAY_ENABLE_MOCK: "true"
+      GATEWAY_EMBEDDINGS: hash
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - gwdata:/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 15s
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 2s
+      retries: 15
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.62.0
+    profiles: ["observability"]
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - "16686:16686"
+      - "4318:4318"
+
+volumes:
+  gwdata:

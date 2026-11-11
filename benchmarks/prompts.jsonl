@@ -1,0 +1,36 @@
+{"id": "e01", "label": "easy", "prompt": "What is the capital of France?", "paraphrase": "What is France's capital?"}
+{"id": "e02", "label": "easy", "prompt": "Define photosynthesis."}
+{"id": "e03", "label": "easy", "prompt": "Who wrote Hamlet?"}
+{"id": "e04", "label": "easy", "prompt": "Hello, how are you?"}
+{"id": "e05", "label": "easy", "prompt": "What is 2 plus 2?"}
+{"id": "e06", "label": "easy", "prompt": "Name the primary color of the sky."}
+{"id": "e07", "label": "easy", "prompt": "What day comes after Monday?"}
+{"id": "e08", "label": "easy", "prompt": "Who is the author of Pride and Prejudice?"}
+{"id": "e09", "label": "easy", "prompt": "What is a noun?"}
+{"id": "e10", "label": "easy", "prompt": "Say hello in Spanish."}
+{"id": "e11", "label": "easy", "prompt": "What is the boiling point of water in Celsius?"}
+{"id": "e12", "label": "easy", "prompt": "Thanks, that was helpful."}
+{"id": "m01", "label": "medium", "prompt": "Explain how DNS resolution works in a short paragraph with an example.", "paraphrase": "Please explain how DNS resolution works, with a short example."}
+{"id": "m02", "label": "medium", "prompt": "Summarize the water cycle for a high school student.", "paraphrase": "Summarize the water cycle for a high school student please."}
+{"id": "m03", "label": "medium", "prompt": "Describe the difference between a list and a tuple in Python."}
+{"id": "m04", "label": "medium", "prompt": "Give an overview of how vaccines train the immune system."}
+{"id": "m05", "label": "medium", "prompt": "Explain what a database index is and when it helps."}
+{"id": "m06", "label": "medium", "prompt": "Describe the main causes of inflation in plain language."}
+{"id": "m07", "label": "medium", "prompt": "Outline how a web browser loads a page from a URL."}
+{"id": "m08", "label": "medium", "prompt": "Explain the purpose of unit tests in a software project."}
+{"id": "m09", "label": "medium", "prompt": "Describe how a refrigerator keeps food cold."}
+{"id": "m10", "label": "medium", "prompt": "Summarize the hero's journey in one paragraph."}
+{"id": "m11", "label": "medium", "prompt": "Explain what latency and throughput mean for an API."}
+{"id": "m12", "label": "medium", "prompt": "Describe how rainbows form after a storm."}
+{"id": "h01", "label": "hard", "prompt": "Implement a thread-safe LRU cache in Python and analyze its time complexity.", "paraphrase": "Implement a thread-safe LRU cache in Python and analyse its time complexity."}
+{"id": "h02", "label": "hard", "prompt": "Prove that the square root of 2 is irrational using a step by step argument."}
+{"id": "h03", "label": "hard", "prompt": "Design a rate limiter algorithm and compare the trade-offs of token bucket versus leaky bucket.", "paraphrase": "Design a rate limiter algorithm and compare the tradeoffs of token bucket versus leaky bucket."}
+{"id": "h04", "label": "hard", "prompt": "Debug this function and refactor it so the complexity is linear.\n```python\ndef f(n):\n    return sum(sum(1 for _ in range(i)) for i in range(n))\n```"}
+{"id": "h05", "label": "hard", "prompt": "Implement Dijkstra's algorithm and analyze its complexity with a binary heap."}
+{"id": "h06", "label": "hard", "prompt": "Write a formal proof sketch that a balanced binary tree has logarithmic height."}
+{"id": "h07", "label": "hard", "prompt": "Optimize this SQL query and explain the trade-offs of each index you add."}
+{"id": "h08", "label": "hard", "prompt": "Implement exponential backoff with jitter and reason about its failure modes."}
+{"id": "h09", "label": "hard", "prompt": "Compare and contrast consistent hashing versus modulo hashing, then implement a minimal version."}
+{"id": "h10", "label": "hard", "prompt": "Derive the gradient of mean squared error step by step."}
+{"id": "h11", "label": "hard", "prompt": "Architect a multi-region failover strategy and analyze the trade-offs of active-active versus active-passive."}
+{"id": "h12", "label": "hard", "prompt": "Implement a recursive descent parser for arithmetic expressions and prove it handles precedence."}

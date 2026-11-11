@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agent Gateway</title>
+  <style>
+    :root {
+      --bg: #121410;
+      --card: #1c1f19;
+      --line: #31362b;
+      --text: #f4f1e6;
+      --muted: #a3aa96;
+      --accent: #d6ff4a;
+      --good: #9be7c4;
+      --warn: #ffb020;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Iowan Old Style", Palatino, Georgia, serif;
+    }
+    header, main { width: min(1080px, calc(100% - 32px)); margin: 0 auto; }
+    header { padding: 28px 0 8px; display: flex; justify-content: space-between; gap: 16px; align-items: end; }
+    h1 { font-weight: 500; font-size: 34px; letter-spacing: -0.03em; margin: 0; }
+    h1 span { color: var(--accent); }
+    .sub { color: var(--muted); margin: 6px 0 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+    .pill {
+      border: 1px solid var(--line);
+      padding: 6px 10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      color: var(--accent);
+    }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 22px 0; }
+    .card { background: var(--card); border: 1px solid var(--line); padding: 14px 16px; }
+    .card .k { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+    .card .v { font-size: 28px; margin-top: 8px; letter-spacing: -0.03em; }
+    .layout { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+    table { width: 100%; border-collapse: collapse; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+    th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); }
+    th { color: var(--muted); font-weight: 500; }
+    .tag { color: var(--good); }
+    .tag.warn { color: var(--warn); }
+    .empty { color: var(--muted); padding: 18px 6px; }
+    footer { color: var(--muted); font-size: 13px; padding: 18px 0 40px; }
+    @media (max-width: 800px) {
+      .grid, .layout { grid-template-columns: 1fr; }
+      header { flex-direction: column; align-items: start; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Agent <span>Gateway</span></h1>
+      <p class="sub">routing decisions · cache · estimated savings vs the strongest model</p>
+    </div>
+    <div class="pill" id="providers">loading</div>
+  </header>
+  <main>
+    <section class="grid">
+      <article class="card"><div class="k">Requests</div><div class="v" id="requests">0</div></article>
+      <article class="card"><div class="k">Cache hit rate</div><div class="v" id="hit-rate">0%</div></article>
+      <article class="card"><div class="k">Cost saved</div><div class="v" id="saved">$0</div></article>
+      <article class="card"><div class="k">Savings vs largest</div><div class="v" id="pct">0%</div></article>
+    </section>
+    <section class="layout">
+      <article class="card">
+        <div class="k">Recent routes</div>
+        <table>
+          <thead>
+            <tr><th>When</th><th>Policy</th><th>Complexity</th><th>Model</th><th>Cache</th><th>Saved</th></tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+        <div class="empty" id="empty">No requests yet. Send a chat completion to fill this table.</div>
+      </article>
+      <article class="card">
+        <div class="k">Mix</div>
+        <p id="mix" class="sub"></p>
+        <p id="extra" class="sub"></p>
+      </article>
+    </section>
+    <footer>
+      Planning prices, not invoices. The free deploy uses the deterministic mock provider, an in-memory cache, and SQLite on an ephemeral disk.
+    </footer>
+  </main>
+  <script>
+    function money(value) {
+      const n = Number(value || 0);
+      if (n > 0 && n < 0.0001) return "$" + n.toExponential(2);
+      return "$" + n.toFixed(n >= 1 ? 2 : 4);
+    }
+    function pct(value) { return (Number(value || 0) * 100).toFixed(1) + "%"; }
+    function render(data) {
+      document.getElementById("requests").textContent = data.requests || 0;
+      document.getElementById("hit-rate").textContent = pct(data.cache_hit_rate);
+      document.getElementById("saved").textContent = money(data.cost_saved_usd);
+      document.getElementById("pct").textContent = Number(data.savings_pct || 0).toFixed(1) + "%";
+      const providers = (data.providers || []).join(", ") || "none";
+      document.getElementById("providers").textContent = providers + " · cache " + (data.cache_backend || "memory");
+      const mix = data.by_complexity || {};
+      document.getElementById("mix").textContent =
+        "easy " + (mix.easy || 0) + " · medium " + (mix.medium || 0) + " · hard " + (mix.hard || 0);
+      document.getElementById("extra").textContent =
+        "escalations " + (data.escalations || 0) + " · failovers " + (data.failovers || 0);
+      const rows = document.getElementById("rows");
+      const recent = data.recent || [];
+      document.getElementById("empty").style.display = recent.length ? "none" : "block";
+      rows.innerHTML = recent.map(function (row) {
+        const cache = row.cached ? "hit" : "miss";
+        const when = (row.ts || "").replace("T", " ").slice(11, 19);
+        return "<tr><td>" + when + "</td><td>" + row.policy + "</td><td>" + row.complexity +
+          "</td><td>" + row.model + "</td><td class='tag" + (row.cached ? "" : " warn") + "'>" + cache +
+          "</td><td>" + money(row.cost_saved_usd) + "</td></tr>";
+      }).join("");
+    }
+    async function refresh() {
+      const response = await fetch("/api/stats");
+      if (!response.ok) return;
+      render(await response.json());
+    }
+    refresh();
+    setInterval(refresh, 4000);
+  </script>
+</body>
+</html>

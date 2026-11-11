@@ -1,0 +1,38 @@
+# Free web service only. No Postgres and no Key Value: both would be extra
+# services, and free instances still expire or drop data. The gateway runs in
+# mock mode with an in-memory cache and SQLite on the ephemeral disk.
+services:
+  - type: web
+    name: agent-gateway
+    runtime: python
+    plan: free
+    region: oregon
+    buildCommand: pip install .
+    startCommand: uvicorn gateway.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.8"
+      - key: GATEWAY_ENV
+        value: production
+      - key: GATEWAY_ENABLE_MOCK
+        value: "true"
+      - key: GATEWAY_EMBEDDINGS
+        value: hash
+      - key: GATEWAY_OTEL_EXPORTER
+        value: none
+      - key: GATEWAY_DATABASE_URL
+        value: sqlite:////tmp/gateway.db
+      - key: GATEWAY_DEFAULT_POLICY
+        value: cost
+      - key: GATEWAY_BOOTSTRAP_API_KEY
+        value: gw_demo_public
+      - key: GATEWAY_ADMIN_API_KEY
+        generateValue: true
+      - key: GATEWAY_GROQ_API_KEY
+        sync: false
+      - key: GATEWAY_GEMINI_API_KEY
+        sync: false
+      - key: GATEWAY_OLLAMA_BASE_URL
+        sync: false
