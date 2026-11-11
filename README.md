@@ -4,6 +4,8 @@ OpenAI-compatible LLM router for **Deepanshu Varshney**. It sits in front of sev
 
 The default backend is a deterministic mock. Tests, GitHub Actions, and the free Render deploy run with **no API keys**.
 
+**Live demo:** [https://agent-gateway-gx4a.onrender.com](https://agent-gateway-gx4a.onrender.com) ([dashboard](https://agent-gateway-gx4a.onrender.com/dashboard), [health](https://agent-gateway-gx4a.onrender.com/health)). The public demo key is `gw_demo_public`. Free Render services spin down after inactivity, so the first request may be a cold start.
+
 ## What it does
 
 - `POST /v1/chat/completions` and `GET /v1/models`, including server-sent streaming
